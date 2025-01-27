@@ -436,17 +436,21 @@ if input_file and file2 and file3:
         def update_ruleset_shortname(row, df_pcrf):
             current_shortname = row["Ruleset ShortName"]
             
-            if "PRE" in current_shortname or "ACT" in current_shortname:
-                # Match any "Ruleset ShortName" in PCRF containing "PRE" or "ACT"
-                match = df_pcrf[df_pcrf["Ruleset ShortName"].str.contains("PRE|ACT")]
+            if "PRE" in current_shortname:
+                # Match a "Ruleset ShortName" in PCRF containing "PRE"
+                match = df_pcrf[df_pcrf["Ruleset ShortName"].str.contains("PRE")]
                 if not match.empty:
-                    return match.iloc[0]["Ruleset ShortName"]  # Take the first match
+                    return match.iloc[0]["Ruleset ShortName"]  # Replace with the first matching "PRE"
+            elif "ACT" in current_shortname:
+                # Match a "Ruleset ShortName" in PCRF containing "ACT"
+                match = df_pcrf[df_pcrf["Ruleset ShortName"].str.contains("ACT")]
+                if not match.empty:
+                    return match.iloc[0]["Ruleset ShortName"]  # Replace with the first matching "ACT"
             else:
-                # Use the first "Ruleset ShortName" from PCRF that does not contain "PRE" or "ACT"
+                # Take the first "Ruleset ShortName" from PCRF that does not contain "PRE" or "ACT"
                 non_pre_act = df_pcrf[~df_pcrf["Ruleset ShortName"].str.contains("PRE|ACT")]
                 if not non_pre_act.empty:
-                    return non_pre_act.iloc[0]["Ruleset ShortName"]
-            
+                    return non_pre_act.iloc[0]["Ruleset ShortName"]            
             # If no match, return the current value (fallback)
             return current_shortname
         
