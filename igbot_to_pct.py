@@ -367,26 +367,26 @@ if input_file and file2 and file3:
         # Save the modified DataFrame to the Excel sheet
         df.to_excel(writer, sheet_name="Library-Addon-Name", index=False)
 
-        # Sheet 17: Library-Addon-DA - copy from file3.xlsx "Library AddOn_DA"
-        library_addon_da_df= pd.read_excel(file3, engine="openpyxl", sheet_name="Library AddOn_DA")
-        library_addon_da_df["Action"] = "INSERT"  # Add "Action" column with value "INSERT"
+        # Sheet 17: Library-Addon-DA
+        df_library_addon_da = pd.read_excel(file3, engine="openpyxl", sheet_name="Library AddOn_DA")
+        df_library_addon_da["Ruleset ShortName"] = df_library_addon_da["Ruleset ShortName"].astype(str).str.strip()
+        df_library_addon_da["daid"] = df_library_addon_da["daid"].astype(str)
+        df_library_addon_da["Action"] = "INSERT"
 
-        # Convert 'daid' column to string
-        library_addon_da_df['daid'] = library_addon_da_df['daid'].astype(str)
-
-        # Function to transform the Ruleset ShortName based on the pattern
-        def transform_ruleset_shortname(shortname):
-            # Define the regular expression to match the pattern
-            match = re.match(r"(PO_ADO_ROAM_SC_CHINA_3GB_1D)_(MR)([A-Z]*)(\d{4})", shortname)
-            if match:
-                base, mr_prefix, suffix, code = match.groups()
-                # Generate a new code and add the suffix index based on a defined rule
-                new_code = f"MRRSC006000{suffix}000{int(code) + 1:04d}"
-                return f"{base}:{new_code}"
-            return shortname  # If no match, return the original value
-
-        # Apply the transformation to the Ruleset ShortName column
-        library_addon_da_df["Ruleset ShortName"] = library_addon_da_df["Ruleset ShortName"].apply(transform_ruleset_shortname)
+        # Update "Ruleset ShortName" in Library-Addon-DA based on PCRF
+        for index, row in df_library_addon_da.iterrows():
+            ruleset_shortname = row["Ruleset ShortName"]
+            
+            if "PRE" in ruleset_shortname or "ACT" in ruleset_shortname:
+                # Find matching "Ruleset ShortName" in PCRF with the same pattern
+                match = df_pcrf[df_pcrf["Ruleset ShortName"].str.contains("PRE|ACT") & (df_pcrf["Ruleset ShortName"] == ruleset_shortname)]
+                if not match.empty:
+                    df_library_addon_da.at[index, "Ruleset ShortName"] = match.iloc[0]["Ruleset ShortName"]
+            else:
+                # Take the first non-PRE/ACT "Ruleset ShortName" from PCRF
+                non_pre_act = df_pcrf[~df_pcrf["Ruleset ShortName"].str.contains("PRE|ACT")]
+                if not non_pre_act.empty:
+                    df_library_addon_da.at[index, "Ruleset ShortName"] = non_pre_act.iloc[0]["Ruleset ShortName"]
         
         library_addon_da_df.to_excel(writer, sheet_name="Library-Addon-DA", index=False)
 
