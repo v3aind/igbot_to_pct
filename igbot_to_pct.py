@@ -493,7 +493,7 @@ if input_file and file2 and file3:
         dormant_config_df.to_excel(writer, sheet_name="Dormant-Config", index=False)
 
 
-        writer.save()
+        writer.close()
         st.download_button(
             label="Download Processed Excel",
             data=output.getvalue(),
