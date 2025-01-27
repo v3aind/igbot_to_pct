@@ -424,12 +424,34 @@ if input_file and file2 and file3:
 
         # Sheet 19: Standalone - copy from file3.xlsx "StandAlone"
         standalone_df= pd.read_excel(file3, engine="openpyxl", sheet_name="StandAlone")
+        standalone_df["Ruleset ShortName"] = standalone_df["Ruleset ShortName"].astype(str).str.strip()
         standalone_df["Action"] = "INSERT"  # Add "Action" column with value "INSERT"
 
         # Convert 'Value', 'UOM', 'Validity' column to string in standalone_df
         standalone_df['Value'] = standalone_df['Value'].astype(str)
         standalone_df['UOM'] = standalone_df['UOM'].astype(str)
         standalone_df['Validity'] = standalone_df['Validity'].astype(str)
+        
+        # Ensure "Ruleset ShortName" is updated using PCRF
+        def update_ruleset_shortname(row, df_pcrf):
+            current_shortname = row["Ruleset ShortName"]
+            
+            if "PRE" in current_shortname or "ACT" in current_shortname:
+                # Match any "Ruleset ShortName" in PCRF containing "PRE" or "ACT"
+                match = df_pcrf[df_pcrf["Ruleset ShortName"].str.contains("PRE|ACT")]
+                if not match.empty:
+                    return match.iloc[0]["Ruleset ShortName"]  # Take the first match
+            else:
+                # Use the first "Ruleset ShortName" from PCRF that does not contain "PRE" or "ACT"
+                non_pre_act = df_pcrf[~df_pcrf["Ruleset ShortName"].str.contains("PRE|ACT")]
+                if not non_pre_act.empty:
+                    return non_pre_act.iloc[0]["Ruleset ShortName"]
+            
+            # If no match, return the current value (fallback)
+            return current_shortname
+        
+        # Apply the update function to "Ruleset ShortName"
+        standalone_df["Ruleset ShortName"] = standalone_df.apply(update_ruleset_shortname, axis=1, df_pcrf=df_pcrf)
 
         standalone_df.to_excel(writer, sheet_name="Standalone", index=False)
 
