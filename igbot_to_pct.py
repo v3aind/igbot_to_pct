@@ -135,23 +135,23 @@ if input_file and file2 and file3:
         df.to_excel(writer, sheet_name="Rules-Header", index=False)
 
         # Process Rules-PCRF sheet
-        df = pd.read_excel(file1, sheet_name="Rules-PCRF")
+        df_pcrf = pd.read_excel(file1, sheet_name="Rules-PCRF")
 
         # Ensure Lifetime and MaxLifetime columns exist
         columns_to_convert = ["LifeTime Validity", "MaxLife Time"]
         for col in columns_to_convert:
-            if col in df.columns:
+            if col in df_pcrf.columns:
                 # Convert to string, strip whitespace, and replace NaN with empty strings
-                df[col] = df[col].fillna("").astype(str).str.strip().replace("nan", "")
+                df_pcrf[col] = df_pcrf[col].fillna("").astype(str).str.strip().replace("nan", "")
             else:
                 # If column is missing, create it with default empty strings
-                df[col] = ""
+                df_pcrf[col] = ""
 
         # Add the new column "Action" with the value "INSERT" for all rows
-        df["Action"] = "INSERT"
+        df_pcrf["Action"] = "INSERT"
 
         # Save the updated DataFrame to the Excel sheet as PCRF
-        df.to_excel(writer, sheet_name="PCRF", index=False)
+        df_pcrf.to_excel(writer, sheet_name="PCRF", index=False)
 
         # Handle specific sheets
         try:
