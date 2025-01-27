@@ -4,10 +4,10 @@ import streamlit as st
 from io import BytesIO
 
 # Title for Streamlit app
-st.title("Excel Processing App")
+st.title("iGBot output to PLD Files")
 
 # Upload input files
-input_file = st.file_uploader("Upload the input Excel file", type=["xlsx"])
+input_file = st.file_uploader("Upload the iGBot Result file", type=["xlsx"])
 file2 = st.file_uploader("Upload the POID matching file (Roaming_SC_Completion_v1.xlsx)", type=["xlsx"])
 file3 = st.file_uploader("Upload the Prodef DMP file", type=["xlsx"])
 
