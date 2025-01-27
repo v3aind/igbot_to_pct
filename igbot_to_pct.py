@@ -378,10 +378,10 @@ if input_file and file2 and file3:
             ruleset_shortname = row["Ruleset ShortName"]
             
             if "PRE" in ruleset_shortname or "ACT" in ruleset_shortname:
-                # Find matching "Ruleset ShortName" in PCRF containing "PRE" or "ACT"
-                match = df_pcrf[df_pcrf["Ruleset ShortName"].str.contains("PRE|ACT") & (df_pcrf["Ruleset ShortName"] == ruleset_shortname)]
-                if not match.empty:
-                    df_library_addon_da.at[index, "Ruleset ShortName"] = match.iloc[0]["Ruleset ShortName"]
+                   # Find matching "Ruleset ShortName" in PCRF with the same pattern
+                   match = df_pcrf[df_pcrf["Ruleset ShortName"].str.contains("PRE|ACT") & (df_pcrf["Ruleset ShortName"] == ruleset_shortname)]
+                   if not match.empty:
+                       df_library_addon_da.at[index, "Ruleset ShortName"] = match.iloc[0]["Ruleset ShortName"]
             else:
                 # Take the first non-PRE/ACT "Ruleset ShortName" from PCRF
                 non_pre_act = df_pcrf[~df_pcrf["Ruleset ShortName"].str.contains("PRE|ACT")]
