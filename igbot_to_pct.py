@@ -388,7 +388,7 @@ if input_file and file2 and file3:
                 if not non_pre_act.empty:
                     df_library_addon_da.at[index, "Ruleset ShortName"] = non_pre_act.iloc[0]["Ruleset ShortName"]
         
-        library_addon_da_df.to_excel(writer, sheet_name="Library-Addon-DA", index=False)
+        df_library_addon_da.to_excel(writer, sheet_name="Library-Addon-DA", index=False)
 
         # Sheet 18: Library-Addon-UCUT
         library_addon_ucut_df = pd.DataFrame(
