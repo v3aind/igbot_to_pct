@@ -136,6 +136,7 @@ if input_file and file2 and file3:
 
         # Process Rules-PCRF sheet
         df_pcrf = pd.read_excel(file1, sheet_name="Rules-PCRF")
+        df_pcrf["Ruleset ShortName"] = df_pcrf["Ruleset ShortName"].astype(str).str.strip()
 
         # Ensure Lifetime and MaxLifetime columns exist
         columns_to_convert = ["LifeTime Validity", "MaxLife Time"]
@@ -373,20 +374,25 @@ if input_file and file2 and file3:
         df_library_addon_da["daid"] = df_library_addon_da["daid"].astype(str)
         df_library_addon_da["Action"] = "INSERT"
 
-        # Update "Ruleset ShortName" in Library-Addon-DA based on PCRF
-        for index, row in df_library_addon_da.iterrows():
-            ruleset_shortname = row["Ruleset ShortName"]
+        # Ensure "Ruleset ShortName" is updated using PCRF
+        def update_ruleset_shortname(row, df_pcrf):
+            current_shortname = row["Ruleset ShortName"]
             
-            if "PRE" in ruleset_shortname or "ACT" in ruleset_shortname:
-                   # Find matching "Ruleset ShortName" in PCRF with the same pattern
-                   match = df_pcrf[df_pcrf["Ruleset ShortName"].str.contains("PRE|ACT") & (df_pcrf["Ruleset ShortName"] == ruleset_shortname)]
-                   if not match.empty:
-                       df_library_addon_da.at[index, "Ruleset ShortName"] = match.iloc[0]["Ruleset ShortName"]
+            if "PRE" in current_shortname or "ACT" in current_shortname:
+                # Match any "Ruleset ShortName" in PCRF containing "PRE" or "ACT"
+                match = df_pcrf[df_pcrf["Ruleset ShortName"].str.contains("PRE|ACT")]
+                if not match.empty:
+                    return match.iloc[0]["Ruleset ShortName"]  # Take the first match
             else:
-                # Take the first non-PRE/ACT "Ruleset ShortName" from PCRF
+                # Use the first "Ruleset ShortName" from PCRF that does not contain "PRE" or "ACT"
                 non_pre_act = df_pcrf[~df_pcrf["Ruleset ShortName"].str.contains("PRE|ACT")]
                 if not non_pre_act.empty:
-                    df_library_addon_da.at[index, "Ruleset ShortName"] = non_pre_act.iloc[0]["Ruleset ShortName"]
+                    return non_pre_act.iloc[0]["Ruleset ShortName"]
+            
+            # If no match, return the current value (fallback)
+            return current_shortname
+        # Apply the update function to "Ruleset ShortName"
+        df_library_addon_da["Ruleset ShortName"] = df_library_addon_da.apply(update_ruleset_shortname, axis=1, df_pcrf=df_pcrf)
         
         df_library_addon_da.to_excel(writer, sheet_name="Library-Addon-DA", index=False)
 
