@@ -373,6 +373,20 @@ if input_file and file2 and file3:
         # Convert 'daid' column to string
         library_addon_da_df['daid'] = library_addon_da_df['daid'].astype(str)
 
+        # Function to transform the Ruleset ShortName based on the pattern
+        def transform_ruleset_shortname(shortname):
+            # Define the regular expression to match the pattern
+            match = re.match(r"(PO_ADO_ROAM_SC_CHINA_3GB_1D)_(MR)([A-Z]*)(\d{4})", shortname)
+            if match:
+                base, mr_prefix, suffix, code = match.groups()
+                # Generate a new code and add the suffix index based on a defined rule
+                new_code = f"MRRSC006000{suffix}000{int(code) + 1:04d}"
+                return f"{base}:{new_code}"
+            return shortname  # If no match, return the original value
+
+        # Apply the transformation to the Ruleset ShortName column
+        library_addon_da_df["Ruleset ShortName"] = library_addon_da_df["Ruleset ShortName"].apply(transform_ruleset_shortname)
+        
         library_addon_da_df.to_excel(writer, sheet_name="Library-Addon-DA", index=False)
 
         # Sheet 18: Library-Addon-UCUT
