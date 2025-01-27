@@ -21,10 +21,10 @@ if input_file and file2 and file3:
             st.stop()
 
         # Step 2: Load file2 to match POID and get "PO Name" and "Master Keyword"
-        poid_df = pd.ExcelFile(file2).parse("Sheet1")
+        poid_df = pd.read_excel(file2, engine="openpyxl", sheet_name="Sheet1")  # Specify engine and sheet name
         required_columns = {"POID", "POName", "Keyword"}
         if not required_columns.issubset(poid_df.columns):
-            st.error(f"file2 is missing one or more required columns: {required_columns}")
+            st.error(f"File2 is missing one or more required columns: {required_columns}")
             st.stop()
 
         # Match POID
