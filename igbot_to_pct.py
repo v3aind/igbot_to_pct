@@ -367,7 +367,7 @@ if input_file and file2 and file3:
         df.to_excel(writer, sheet_name="Library-Addon-Name", index=False)
 
         # Sheet 17: Library-Addon-DA - copy from file3.xlsx "Library AddOn_DA"
-        library_addon_da_df = file3.parse("Library AddOn_DA")  # Read "Library AddOn_DA" sheet
+        library_addon_da_df= pd.read_excel(file3, engine="openpyxl", sheet_name="Library AddOn_DA")
         library_addon_da_df["Action"] = "INSERT"  # Add "Action" column with value "INSERT"
 
         # Convert 'daid' column to string
@@ -396,7 +396,7 @@ if input_file and file2 and file3:
         library_addon_ucut_df.to_excel(writer, sheet_name="Library-Addon-UCUT", index=False)
 
         # Sheet 19: Standalone - copy from file3.xlsx "StandAlone"
-        standalone_df = file3.parse("StandAlone")  # Read "StandAlone" sheet
+        standalone_df= pd.read_excel(file3, engine="openpyxl", sheet_name="StandAlone")
         standalone_df["Action"] = "INSERT"  # Add "Action" column with value "INSERT"
 
         # Convert 'Value', 'UOM', 'Validity' column to string in standalone_df
