@@ -2,6 +2,19 @@ import re
 import pandas as pd
 import streamlit as st
 from io import BytesIO
+import threading
+import time
+
+def keep_awake():
+    while True:
+        try:
+            requests.get("https://sp-area-details-dmp.streamlit.app")  # Replace with your app URL
+        except Exception as e:
+            print("Keep-awake request failed:", e)
+        time.sleep(600)  # Ping every 10 minutes
+
+# Start keep-awake thread
+threading.Thread(target=keep_awake, daemon=True).start()
 
 # Title for Streamlit app
 st.title("iGBot output to PLD Files")
