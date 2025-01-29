@@ -548,7 +548,7 @@ if input_file and file2 and file3:
 
         writer.close()
         st.download_button(
-            label="Download {output_file_name}",
+            label=f"Download {output_file_name}",
             data=output.getvalue(),
             file_name=output_file_name,
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
