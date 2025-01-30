@@ -206,7 +206,7 @@ if input_file and file2 and file3:
                 "Channel": ["sample"],
                 "Message Content Index": ["sample"],
                 "Message Content": ["sample"],
-                "Action": ["NO CHANGE"],
+                "Action": ["NO_CHANGE"],
             }
         )
         messages_df.to_excel(writer, sheet_name="Rules-Messages", index=False)
