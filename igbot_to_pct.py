@@ -44,7 +44,6 @@ if input_file:
         st.stop()
 
 if file2:
-    st.write("✅ File2 uploaded")  # Debug log
     try:
         poid_df = pd.read_excel(file2, engine="openpyxl", sheet_name="Sheet1")
         required_columns = {"POID", "POName", "Keyword"}
@@ -70,8 +69,6 @@ if file2:
 
     # Ensure `output_file_name` is always defined
     output_file_name = f"PLD_{ID}_{final_poid}.xlsx"
-    st.write(f"✅ Output file name set: {output_file_name}")  # Debug log
-
     file1 = pd.ExcelFile(input_file)
 
     writer = pd.ExcelWriter(output, engine="xlsxwriter")
@@ -108,7 +105,7 @@ if file2:
     df["Short Code"] = df["Short Code"].fillna("")
 
     # Add the new column "Action" with the value "INSERT" for all rows
-    df["Action"] = "INSERT"
+    df["Action"] = "NO_CHANGE"
 
     # Save the processed DataFrame to the output Excel file
     df.to_excel(writer, sheet_name="Rules-Keyword", index=False)
@@ -128,7 +125,7 @@ if file2:
     df["Short Code"] = df["Short Code"].fillna("")
 
     # Add the new column "Action" with the value "INSERT" for all rows
-    df["Action"] = "INSERT"
+    df["Action"] = "NO_CHANGE"
 
     # Save the processed DataFrame to the output Excel file
     df.to_excel(writer, sheet_name="Rules-Alias", index=False)
@@ -151,7 +148,7 @@ if file2:
     df["Ruleset Version"] = pd.to_numeric(df["Ruleset Version"], errors="coerce").fillna(0).astype(int)
 
     # Add the new column "Action" with the value "INSERT" for all rows
-    df["Action"] = "INSERT"
+    df["Action"] = "NO_CHANGE"
 
     # Save the processed DataFrame to the output Excel file
     df.to_excel(writer, sheet_name="Rules-Header", index=False)
@@ -183,6 +180,7 @@ if file2:
             df["OpIndex"] = pd.to_numeric(df["OpIndex"], errors="coerce").astype("Int64")
         # Add the new column "Action" with value "INSERT" for all rows
         df["Action"] = "INSERT"
+        df.loc[:, "Keyword Type"] = ""
         
         df.to_excel(writer, sheet_name="Rules-Cases-Condition", index=False)
     except Exception as e:
@@ -197,6 +195,7 @@ if file2:
             df["Exit Value"] = df["Ruleset ShortName"].apply(
                 lambda x: "1" if pd.notna(x) and x.strip() != "" else ""
             )
+        df = df[df["Keyword"] != "AKTIF"]
         # Add the new column "Action" with the value "INSERT" for all rows
         df["Action"] = "INSERT"
 
@@ -221,33 +220,25 @@ if file2:
     messages_df.to_excel(writer, sheet_name="Rules-Messages", index=False)
 
     # Sheet 9: Rules-Price-Mapping
-    df = pd.read_excel(file1, sheet_name="Rules-Price-Mapping")
+    df = pd.read_excel(file3, engine="openpyxl", sheet_name="Rules-Price-Mapping")
 
-    # Convert "Price" column to integers
-    df["Price"] = (
-        df["Price"]
-        .astype(str)  # Convert to string to handle potential non-string values
-        .str.replace(",", "")  # Remove commas
-        .pipe(pd.to_numeric, errors="coerce")  # Convert to numeric, coercing errors to NaN
-        .astype("Int64")  # Convert to integer (nullable type)
-    )
+    # Convert "Variable Name" column to lowercase
+    if "Variable Name" in df.columns:
+        df["Variable Name"] = df["Variable Name"].str.lower()
 
     # Ensure the "SID" column exists and manipulate it as needed
     if "SID" in df.columns:
-        # Convert to string, strip whitespace, replace "nan", and handle numeric values
+        # Convert to string, strip whitespace, replace "nan"/"NaN", and handle numeric values
         df["SID"] = (
             df["SID"]
             .astype(str)
             .str.strip()
-            .replace("nan", "")
+            .replace(["nan", "NaN"], "")  # Handle different cases of "nan"
             .apply(lambda x: str(int(float(x))) if x.replace(".", "").isdigit() else x)
         )
     else:
         # If "SID" column is missing, create it with default empty strings
         df["SID"] = ""
-
-    # Replace any NaN with empty strings explicitly
-    df["SID"] = df["SID"].fillna("")
 
     # Add the new column "Action" with the value "INSERT" for all rows
     df["Action"] = "INSERT"
