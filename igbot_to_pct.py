@@ -574,13 +574,15 @@ if file2:
         )
         dormant_config_df.to_excel(writer, sheet_name="Dormant-Config", index=False)
 
+    writer.close()  # Ensure writer is closed
 
-        writer.close()
-        st.download_button(
-            label=f"Download {output_file_name}",
-            data=output.getvalue(),
-            file_name=output_file_name,
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        )
-    except Exception as e:
-        st.error(f"An error occurred: {e}")
+# Reset the file pointer to the beginning
+output.seek(0)
+
+# Create a Streamlit download button
+st.download_button(
+    label="Download Excel File",
+    data=output.getvalue(),
+    file_name="output.xlsx",
+    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+)
