@@ -25,6 +25,12 @@ file2 = st.file_uploader("Upload the POID matching file (Roaming_SC_Completion_v
 file3 = st.file_uploader("Upload the Prodef DMP file", type=["xlsx"])
 
 def extract_poid(filename):
+    # Remove .xlsx extension if present
+    filename = filename.replace(".xlsx", "")  # Simple method
+
+    # Alternative safer method:
+    # filename, _ = os.path.splitext(filename)  # Removes any extension
+
     parts = filename.split("-")
     if len(parts) < 4:
         return None  # Invalid format
@@ -32,7 +38,7 @@ def extract_poid(filename):
     return parts[3].strip()  # Extract the POID
 
 # Example usage
-filename = "RESULT- ALL RULES -Prodef DMP-PO_ADO_ROAM_SC_SING_120GB_360D"
+filename = "RESULT- ALL RULES -Prodef DMP-PO_ADO_ROAM_SC_SING_120GB_360D.xlsx"
 extracted_poid = extract_poid(filename)
 
 if extracted_poid:
