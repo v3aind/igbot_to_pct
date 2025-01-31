@@ -267,8 +267,9 @@ if file2:
         # Remove commas, keep only numeric part, and truncate decimals
         df["Amount"] = (
             df["Amount"]
+            .astype(str)  # Convert everything to string first
             .str.replace(",", "", regex=False)  # Remove commas
-            .str.split(".", n=1).str[0]        # Remove decimals by splitting
+            .str.split(".", n=1).str[0]  # Remove decimals
         )
         # Convert to integer
         df["Amount"] = pd.to_numeric(df["Amount"], errors="coerce").astype("Int64")
