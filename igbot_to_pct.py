@@ -6,6 +6,9 @@ import threading
 import time
 import requests  # Missing import
 
+# Initialize output buffer at the start
+output = BytesIO()
+
 def keep_awake():
     while True:
         try:
