@@ -577,7 +577,6 @@ if file2:
     writer.close()  # Ensure writer is closed
 
 # Ensure output is written before seeking
-writer.close()
 output.seek(0)
 
 st.write("File processing completed successfully.")  # Debugging
