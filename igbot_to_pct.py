@@ -76,7 +76,7 @@ if file2:
         st.warning("Please enter an ID to proceed.")
         st.stop()
 
-    # Construct output file name
+    # Ensure `output_file_name` is always defined
     output_file_name = f"PLD_{ID}_{final_poid}.xlsx"
 
     # Process input file
@@ -588,6 +588,6 @@ st.write(f"File size: {len(output.getvalue())} bytes")  # Debugging
 st.download_button(
     label="Download Excel File",
     data=output.getvalue(),
-    file_name=output_file_name,
-    mime="application/octet-stream",
+    file_name=output_file_name,  # Use the safely initialized variable
+    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 )
