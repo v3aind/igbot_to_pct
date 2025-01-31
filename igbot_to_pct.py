@@ -4,41 +4,35 @@ import streamlit as st
 from io import BytesIO
 import threading
 import time
-import requests  # Missing import
+import requests
 
-# Initialize output buffer at the start
+# Initialize default output and file name
 output = BytesIO()
+output_file_name = "default_output.xlsx"  # Default value to avoid NameError
 
 def keep_awake():
     while True:
         try:
-            requests.get("https://sp-area-details-dmp.streamlit.app")  # Replace with your app URL
+            requests.get("https://sp-area-details-dmp.streamlit.app")  
         except Exception as e:
             print("Keep-awake request failed:", e)
-        time.sleep(600)  # Ping every 10 minutes
+        time.sleep(600)  
 
-# Start keep-awake thread
 threading.Thread(target=keep_awake, daemon=True).start()
 
-# Title for Streamlit app
 st.title("iGBot Output to PLD Files")
 
-# Upload input files
 input_file = st.file_uploader("Upload the iGBot Result file", type=["xlsx"])
 file2 = st.file_uploader("Upload the POID matching file (Roaming_SC_Completion_v1.xlsx)", type=["xlsx"])
 file3 = st.file_uploader("Upload the Prodef DMP file", type=["xlsx"])
 
 def extract_poid(filename):
-    # Remove .xlsx extension if present
-    filename = filename.replace(".xlsx", "")  # Simple method
-
+    filename = filename.replace(".xlsx", "")  
     parts = filename.split("-")
     if len(parts) < 4:
-        return None  # Invalid format
-    
-    return parts[3].strip()  # Extract the POID
+        return None  
+    return parts[3].strip()  
 
-# Ensure input file is uploaded before processing
 if input_file:
     input_file_name = input_file.name
     extracted_poid = extract_poid(input_file_name)
@@ -49,18 +43,17 @@ if input_file:
         st.error("Invalid input file name format. Unable to extract POID.")
         st.stop()
 
-# Ensure POID matching file is uploaded before reading it
 if file2:
+    st.write("✅ File2 uploaded")  # Debug log
     try:
-        poid_df = pd.read_excel(file2, engine="openpyxl", sheet_name="Sheet1")  # Specify engine and sheet name
+        poid_df = pd.read_excel(file2, engine="openpyxl", sheet_name="Sheet1")
         required_columns = {"POID", "POName", "Keyword"}
         if not required_columns.issubset(poid_df.columns):
-            st.error(f"File2 is missing one or more required columns: {required_columns}")
+            st.error(f"File2 is missing required columns: {required_columns}")
             st.stop()
     except Exception as e:
         st.error(f"Error reading POID matching file: {e}")
 
-    # Match POID
     matched_row = poid_df[poid_df["POID"] == extracted_poid]
     if matched_row.empty:
         st.error(f"No matching POID found for '{extracted_poid}' in file2.")
@@ -70,7 +63,6 @@ if file2:
     po_name = matched_row["POName"].iloc[0]
     master_keyword = matched_row["Keyword"].iloc[0]
 
-    # Step 3: Get ID from user
     ID = st.text_input("Enter the PLD ID:")
     if not ID:
         st.warning("Please enter an ID to proceed.")
@@ -78,12 +70,10 @@ if file2:
 
     # Ensure `output_file_name` is always defined
     output_file_name = f"PLD_{ID}_{final_poid}.xlsx"
+    st.write(f"✅ Output file name set: {output_file_name}")  # Debug log
 
-    # Process input file
     file1 = pd.ExcelFile(input_file)
 
-    # Create an ExcelWriter object using BytesIO for Streamlit
-    output = BytesIO()
     writer = pd.ExcelWriter(output, engine="xlsxwriter")
 
     # Create DataFrame for the "PO" sheet with predefined and matched values
@@ -582,12 +572,12 @@ if file2:
 # Ensure output is written before seeking
 output.seek(0)
 
-st.write("File processing completed successfully.")  # Debugging
-st.write(f"File size: {len(output.getvalue())} bytes")  # Debugging
+st.write(f"🔍 Debug: output_file_name = {output_file_name}")  # Debug log
 
+# Streamlit download button
 st.download_button(
     label="Download Excel File",
     data=output.getvalue(),
-    file_name=output_file_name,  # Use the safely initialized variable
+    file_name=output_file_name,  
     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 )
