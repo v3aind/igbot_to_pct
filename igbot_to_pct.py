@@ -4,6 +4,7 @@ import streamlit as st
 from io import BytesIO
 import threading
 import time
+import requests  # Missing import
 
 def keep_awake():
     while True:
@@ -17,7 +18,7 @@ def keep_awake():
 threading.Thread(target=keep_awake, daemon=True).start()
 
 # Title for Streamlit app
-st.title("iGBot output to PLD Files")
+st.title("iGBot Output to PLD Files")
 
 # Upload input files
 input_file = st.file_uploader("Upload the iGBot Result file", type=["xlsx"])
@@ -28,30 +29,33 @@ def extract_poid(filename):
     # Remove .xlsx extension if present
     filename = filename.replace(".xlsx", "")  # Simple method
 
-    # Alternative safer method:
-    # filename, _ = os.path.splitext(filename)  # Removes any extension
-
     parts = filename.split("-")
     if len(parts) < 4:
         return None  # Invalid format
     
     return parts[3].strip()  # Extract the POID
 
-# Example usage
-filename = "RESULT- ALL RULES -Prodef DMP-PO_ADO_ROAM_SC_SING_120GB_360D.xlsx"
-extracted_poid = extract_poid(filename)
+# Ensure input file is uploaded before processing
+if input_file:
+    input_file_name = input_file.name
+    extracted_poid = extract_poid(input_file_name)
 
-if extracted_poid:
-    st.success(f"Extracted POID: {extracted_poid}")
-else:
-    st.error("Invalid input file name format. Unable to extract POID.")
+    if extracted_poid:
+        st.success(f"Extracted POID: {extracted_poid}")
+    else:
+        st.error("Invalid input file name format. Unable to extract POID.")
+        st.stop()
 
-        # Step 2: Load file2 to match POID and get "PO Name" and "Master Keyword"
+# Ensure POID matching file is uploaded before reading it
+if file2:
+    try:
         poid_df = pd.read_excel(file2, engine="openpyxl", sheet_name="Sheet1")  # Specify engine and sheet name
         required_columns = {"POID", "POName", "Keyword"}
         if not required_columns.issubset(poid_df.columns):
             st.error(f"File2 is missing one or more required columns: {required_columns}")
             st.stop()
+    except Exception as e:
+        st.error(f"Error reading POID matching file: {e}")
 
         # Match POID
         matched_row = poid_df[poid_df["POID"] == extracted_poid]
