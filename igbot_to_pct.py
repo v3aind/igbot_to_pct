@@ -179,6 +179,7 @@ if file2:
         if "OpIndex" in df.columns:
             df["OpIndex"] = pd.to_numeric(df["OpIndex"], errors="coerce").astype("Int64")
         # Add the new column "Action" with value "INSERT" for all rows
+        df = df[df["Keyword"] != "AKTIF"]
         df["Action"] = "INSERT"
         df.loc[:, "Keyword Type"] = ""
         
