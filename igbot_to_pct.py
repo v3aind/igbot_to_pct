@@ -220,7 +220,7 @@ if file2:
     messages_df.to_excel(writer, sheet_name="Rules-Messages", index=False)
 
     # Sheet 9: Rules-Price-Mapping
-    df = pd.read_excel(file3, engine="openpyxl", sheet_name="Rules-Price-Mapping")
+    df = pd.read_excel(file3, engine="openpyxl", sheet_name="Rules-Price")
 
     # Convert "Variable Name" column to lowercase
     if "Variable Name" in df.columns:
