@@ -24,15 +24,21 @@ input_file = st.file_uploader("Upload the iGBot Result file", type=["xlsx"])
 file2 = st.file_uploader("Upload the POID matching file (Roaming_SC_Completion_v1.xlsx)", type=["xlsx"])
 file3 = st.file_uploader("Upload the Prodef DMP file", type=["xlsx"])
 
-if input_file and file2 and file3:
-    try:
-        # Step 1: Extract POID from input file name
-        input_file_name = input_file.name
-        try:
-            extracted_poid = input_file_name.split("-")[3].split("(")[0].strip()
-        except IndexError:
-            st.error("Invalid input file name format. Unable to extract POID.")
-            st.stop()
+def extract_poid(filename):
+    parts = filename.split("-")
+    if len(parts) < 4:
+        return None  # Invalid format
+    
+    return parts[3].strip()  # Extract the POID
+
+# Example usage
+filename = "RESULT- ALL RULES -Prodef DMP-PO_ADO_ROAM_SC_SING_120GB_360D"
+extracted_poid = extract_poid(filename)
+
+if extracted_poid:
+    st.success(f"Extracted POID: {extracted_poid}")
+else:
+    st.error("Invalid input file name format. Unable to extract POID.")
 
         # Step 2: Load file2 to match POID and get "PO Name" and "Master Keyword"
         poid_df = pd.read_excel(file2, engine="openpyxl", sheet_name="Sheet1")  # Specify engine and sheet name
