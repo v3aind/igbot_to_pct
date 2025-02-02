@@ -385,36 +385,8 @@ if file2:
 
     # Sheet 17: Library-Addon-DA
     df_library_addon_da = pd.read_excel(file3, engine="openpyxl", sheet_name="Library AddOn_DA")
-    df_library_addon_da["Ruleset ShortName"] = df_library_addon_da["Ruleset ShortName"].astype(str).str.strip()
     df_library_addon_da["daid"] = df_library_addon_da["daid"].astype(str)
     df_library_addon_da["Action"] = "INSERT"
-
-    # Ensure "Ruleset ShortName" is updated using PCRF
-    def update_ruleset_shortname(row, df_pcrf):
-        current_shortname = row["Ruleset ShortName"]
-        
-        if "PRE" in current_shortname:
-            # Match a "Ruleset ShortName" in PCRF containing "PRE"
-            match = df_pcrf[df_pcrf["Ruleset ShortName"].str.contains("PRE")]
-            if not match.empty:
-                return match.iloc[0]["Ruleset ShortName"]  # Replace with the first matching "PRE"
-        elif "ACT" in current_shortname:
-            # Match a "Ruleset ShortName" in PCRF containing "ACT"
-            match = df_pcrf[df_pcrf["Ruleset ShortName"].str.contains("ACT")]
-            if not match.empty:
-                return match.iloc[0]["Ruleset ShortName"]  # Replace with the first matching "ACT"
-        else:
-            # Take the first "Ruleset ShortName" from PCRF that does not contain "PRE" or "ACT"
-            non_pre_act = df_pcrf[~df_pcrf["Ruleset ShortName"].str.contains("PRE|ACT")]
-            if not non_pre_act.empty:
-                return non_pre_act.iloc[0]["Ruleset ShortName"]
-        
-        # If no match, return the current value (fallback)
-        return current_shortname
-    
-    # Apply the update function to "Ruleset ShortName"
-    df_library_addon_da["Ruleset ShortName"] = df_library_addon_da.apply(update_ruleset_shortname, axis=1, df_pcrf=df_pcrf)
-    
     df_library_addon_da.to_excel(writer, sheet_name="Library-Addon-DA", index=False)
 
     # Sheet 18: Library-Addon-UCUT
