@@ -154,7 +154,7 @@ if file2:
     df.to_excel(writer, sheet_name="Rules-Header", index=False)
 
     # Process Rules-PCRF sheet
-    df_pcrf = pd.read_excel(file1, sheet_name="Rules-PCRF")
+    df_pcrf = pd.read_excel(file1, sheet_name="PCRF")
     df_pcrf["Ruleset ShortName"] = df_pcrf["Ruleset ShortName"].astype(str).str.strip()
 
     # Ensure Lifetime and MaxLifetime columns exist
