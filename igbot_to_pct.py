@@ -149,7 +149,7 @@ if file2:
     df["Ruleset Version"] = pd.to_numeric(df["Ruleset Version"], errors="coerce").fillna(0).astype(int)
 
     # Set "Action" column based on condition
-    df["Action"] = np.where(df["Status"] == "AKTIF", "INSERT", "NO_CHANGE")
+    df["Action"] = np.where(df["Keyword"] == "AKTIF", "INSERT", "NO_CHANGE")
 
     # Save the processed DataFrame to the output Excel file
     df.to_excel(writer, sheet_name="Rules-Header", index=False)
