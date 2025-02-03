@@ -384,7 +384,7 @@ if file2:
     df.to_excel(writer, sheet_name="Library-Addon-Name", index=False)
 
     # Sheet 17: Library-Addon-DA
-    df_library_addon_da = pd.read_excel(file3, engine="openpyxl", sheet_name="Library AddOn_DA")
+    df_library_addon_da = pd.read_excel(file3, engine="openpyxl", sheet_name="Library-AddOn-DA")
     df_library_addon_da["daid"] = df_library_addon_da["daid"].astype(str)
     df_library_addon_da["Action"] = "INSERT"
     df_library_addon_da.to_excel(writer, sheet_name="Library-Addon-DA", index=False)
@@ -410,7 +410,7 @@ if file2:
     library_addon_ucut_df.to_excel(writer, sheet_name="Library-Addon-UCUT", index=False)
 
     # Sheet 19: Standalone - copy from file3.xlsx "StandAlone"
-    standalone_df= pd.read_excel(file3, engine="openpyxl", sheet_name="StandAlone")
+    standalone_df= pd.read_excel(file3, engine="openpyxl", sheet_name="Standalone")
     standalone_df["Ruleset ShortName"] = standalone_df["Ruleset ShortName"].astype(str).str.strip()
     standalone_df["Action"] = "INSERT"  # Add "Action" column with value "INSERT"
 
