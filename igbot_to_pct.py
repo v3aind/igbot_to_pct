@@ -363,7 +363,7 @@ if file2:
     incompatibility_df.to_excel(writer, sheet_name="Incompatibility", index=False)
 
     # Sheet 16: Library-Addon-Name
-    df = pd.read_excel(file1, sheet_name="Rules-Library-Addon")
+    df = pd.read_excel(file1, sheet_name="Library-Addon-Name")
 
     # List of columns to process to maintain as string
     columns_to_process = ["Master Shortcode", "Active Period Length", "Grace Period"]
