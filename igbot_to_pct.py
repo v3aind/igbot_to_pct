@@ -147,8 +147,8 @@ if file2:
     # Convert to numeric, coercing errors to NaN, then fill NaN with 0 and convert to integer
     df["Ruleset Version"] = pd.to_numeric(df["Ruleset Version"], errors="coerce").fillna(0).astype(int)
 
-    # Add the new column "Action" with the value "INSERT" for all rows
-    df["Action"] = "NO_CHANGE"
+    # Set "Action" column based on condition
+    df["Action"] = np.where(df["Status"] == "AKTIF", "INSERT", "NO_CHANGE")
 
     # Save the processed DataFrame to the output Excel file
     df.to_excel(writer, sheet_name="Rules-Header", index=False)
@@ -219,7 +219,7 @@ if file2:
     messages_df.to_excel(writer, sheet_name="Rules-Messages", index=False)
 
     # Sheet 9: Rules-Price-Mapping
-    df = pd.read_excel(file3, engine="openpyxl", sheet_name="Rules-Price")
+    df = pd.read_excel(file1, sheet_name="Rules-Price-Mapping", engine="openpyxl")
 
     # Convert "Variable Name" column to lowercase
     if "Variable Name" in df.columns:
@@ -416,6 +416,7 @@ if file2:
     standalone_df['Value'] = standalone_df['Value'].astype(str)
     standalone_df['UOM'] = standalone_df['UOM'].astype(str)
     standalone_df['Validity'] = standalone_df['Validity'].astype(str)
+    standalone_df['ID'] = standalone_df['ID'].astype(str)
     
     standalone_df.to_excel(writer, sheet_name="Standalone", index=False)
 
