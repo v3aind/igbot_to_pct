@@ -5,6 +5,7 @@ from io import BytesIO
 import threading
 import time
 import requests
+import numpy as np
 
 # Initialize default output and file name
 output = BytesIO()
