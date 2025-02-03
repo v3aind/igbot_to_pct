@@ -384,7 +384,7 @@ if file2:
     df.to_excel(writer, sheet_name="Library-Addon-Name", index=False)
 
     # Sheet 17: Library-Addon-DA
-    df_library_addon_da = pd.read_excel(file3, engine="openpyxl", sheet_name="Library-AddOn-DA")
+    df_library_addon_da = pd.read_excel(file3, engine="openpyxl", sheet_name="Library-Addon-DA")
     df_library_addon_da["daid"] = df_library_addon_da["daid"].astype(str)
     df_library_addon_da["Action"] = "INSERT"
     df_library_addon_da.to_excel(writer, sheet_name="Library-Addon-DA", index=False)
