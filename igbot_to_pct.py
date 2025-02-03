@@ -179,7 +179,6 @@ if file2:
         if "OpIndex" in df.columns:
             df["OpIndex"] = pd.to_numeric(df["OpIndex"], errors="coerce").astype("Int64")
         # Add the new column "Action" with value "INSERT" for all rows
-        df = df[df["Keyword"] != "AKTIF"]
         df["Action"] = "INSERT"
         df.loc[:, "Keyword Type"] = ""
         
@@ -196,7 +195,6 @@ if file2:
             df["Exit Value"] = df["Ruleset ShortName"].apply(
                 lambda x: "1" if pd.notna(x) and x.strip() != "" else ""
             )
-        df = df[df["Keyword"] != "AKTIF"]
         # Add the new column "Action" with the value "INSERT" for all rows
         df["Action"] = "INSERT"
 
