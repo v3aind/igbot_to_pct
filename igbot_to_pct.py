@@ -354,7 +354,6 @@ if file2:
 
     # Sheet 14: Rebuy-Association
     rebuy_association_df= pd.read_excel(file3, engine="openpyxl", sheet_name="Rebuy-Association")
-    rebuy_association_df["Ruleset ShortName"] = rebuy_association_df["Ruleset ShortName"].astype(str).str.strip()
 
     rebuy_association_df.to_excel(writer, sheet_name="Rebuy-Association", index=False)
 
