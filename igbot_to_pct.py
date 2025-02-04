@@ -243,19 +243,31 @@ if file2:
     # Add the new column "Action" with the value "INSERT" for all rows
     df["Action"] = "INSERT"
 
-    # Process file3 (Prodef DMP) and append dormant records from "Rules-Price" sheet
-    if file3:
-        try:
-            prodef_df = pd.read_excel(file3, sheet_name="Rules-Price", engine="openpyxl")
+# Process file3 (Prodef DMP) - Read "Rules-Price" sheet
+if file3:
+    try:
+        prodef_df = pd.read_excel(file3, sheet_name="Rules-Price", engine="openpyxl")
 
-            if "Variant" in prodef_df.columns:
-                # Filter for rows where Variable Name == "DORMANT"
-                dormant_df = prodef_df[prodef_df["Variable Name"].str.lower() == "dormant"].copy()
+        # Debugging: Show available columns
+        st.write("Columns in 'Rules-Price':", prodef_df.columns)
 
-                # Add POID column
-                dormant_df["POID"] = final_poid
+        # Ensure "Variable Name" column exists
+        if "Variable Name" in prodef_df.columns:
+            prodef_df["Variable Name"] = prodef_df["Variable Name"].astype(str).str.strip().str.lower()  # Normalize text
 
-                # Ensure necessary columns exist in dormant_df
+            # Debugging: Show unique values in "Variable Name"
+            st.write("Unique values in 'Variable Name' column:", prodef_df["Variable Name"].unique())
+
+            # Filter for "dormant" rows
+            dormant_df = prodef_df[prodef_df["Variant"] == "DORMANT"].copy()
+
+            if dormant_df.empty:
+                st.warning("No 'dormant' rows found in 'Rules-Price'.")
+            else:
+                # Add POID from file1
+                dormant_df["POID"] = extracted_poid_file1 if extracted_poid_file1 else "UNKNOWN"
+
+                # Ensure necessary columns exist
                 for col in ["SID", "Variable Name", "Action"]:
                     if col not in dormant_df.columns:
                         dormant_df[col] = ""
@@ -263,15 +275,17 @@ if file2:
                 # Set Action column to INSERT
                 dormant_df["Action"] = "INSERT"
 
-                # Append dormant data to existing Rules-Price-Mapping data
+                # Debugging: Show filtered dormant_df before merging
+                st.write("Filtered 'Variable Name' rows from 'Rules-Price':", dormant_df)
+
+                # Append to existing Rules-Price-Mapping
                 df_price_mapping = pd.concat([df_price_mapping, dormant_df], ignore_index=True)
 
-                st.success("Dormant variants from 'Rules-Price' (Prodef DMP) successfully added to 'Rules-Price-Mapping'.")
-
-            else:
-                st.error("'Rules-Price' sheet in Prodef DMP is missing the 'Variant' column. Unable to filter dormant records.")
-        except Exception as e:
-            st.error(f"Error processing 'Rules-Price' sheet in Prodef DMP file: {e}")
+                st.success("Dormant rows successfully added to 'Rules-Price-Mapping'.")
+        else:
+            st.error("'Rules-Price' sheet in Prodef DMP is missing the 'Variant' column.")
+    except Exception as e:
+        st.error(f"Error processing 'Rules-Price' sheet in Prodef DMP file: {e}")
 
     # Save the modified Rules-Price-Mapping data to the Excel sheet
     df_price_mapping.to_excel(writer, sheet_name="Rules-Price-Mapping", index=False)
