@@ -204,20 +204,11 @@ if file2:
         st.error(f"Error processing 'Rules-Cases-Success': {e}")
 
     # Example sheet creation: Rules-Messages
-    messages_df = pd.DataFrame(
-        {
-            "PO ID": ["sample"],
-            "Ruleset ShortName": ["sample"],
-            "Order Status": ["sample"],
-            "Order Type": ["sample"],
-            "Sender Address": ["sample"],
-            "Channel": ["sample"],
-            "Message Content Index": ["sample"],
-            "Message Content": ["sample"],
-            "Action": ["NO_CHANGE"],
-        }
-    )
-    messages_df.to_excel(writer, sheet_name="Rules-Messages", index=False)
+    rule_message_df= pd.read_excel(file3, engine="openpyxl", sheet_name="Rules-Messages")
+    rule_message_df["Ruleset ShortName"] = rule_message_df["Ruleset ShortName"].astype(str).str.strip()
+    rule_message_df["Action"] = "INSERT"  # Add "Action" column with value "INSERT"
+
+    rule_message_df.to_excel(writer, sheet_name="Rules-Messages", index=False)
 
     # Sheet 9: Rules-Price-Mapping
     df_price_mapping = pd.read_excel(file1, sheet_name="Rules-Price-Mapping", engine="openpyxl")
@@ -362,25 +353,9 @@ if file2:
     rebuy_out_df.to_excel(writer, sheet_name="Rebuy-Out", index=False)
 
     # Sheet 14: Rebuy-Association
-    rebuy_association_df = pd.DataFrame(
-        {
-            "Target PO ID": ["sample"],
-            "Target Ruleset ShortName": ["sample"],
-            "Target MPP": ["sample"],
-            "Target Group": ["sample"],
-            "Service Type": ["sample"],
-            "Rebuy Price": ["sample"],
-            "Allow Rebuy": ["sample"],
-            "Rebuy Option": ["sample"],
-            "Product Family": ["sample"],
-            "Source PO ID": ["sample"],
-            "Source Ruleset ShortName": ["sample"],
-            "Source MPP": ["sample"],
-            "Source Group": ["sample"],
-            "Vice Versa Consent": ["sample"],
-            "Action": ["NO_CHANGE"],
-        }
-    )
+    rebuy_association_df= pd.read_excel(file3, engine="openpyxl", sheet_name="Rebuy-Association")
+    rebuy_association_df["Ruleset ShortName"] = rebuy_association_df["Ruleset ShortName"].astype(str).str.strip()
+
     rebuy_association_df.to_excel(writer, sheet_name="Rebuy-Association", index=False)
 
     # Sheet 15: Incompatibility
