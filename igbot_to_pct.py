@@ -291,6 +291,9 @@ if file2:
                 st.error("'Rules-Price' sheet in Prodef DMP is missing the 'Variable Name' column.")
         except Exception as e:
             st.error(f"Error processing 'Rules-Price' sheet in Prodef DMP file: {e}")
+    
+    # Save the modified Rules-Price-Mapping data to the Excel sheet
+    df_price_mapping.to_excel(writer, sheet_name="Rules-Price-Mapping", index=False)
 
     # Sheet 10: Rules-Renewal
     df = pd.read_excel(file1, sheet_name="Rules-Renewal")
