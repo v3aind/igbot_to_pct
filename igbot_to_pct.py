@@ -265,7 +265,7 @@ if file2:
                     st.warning("No 'dormant' rows found in 'Rules-Price'.")
                 else:
                     # Add POID from file1
-                    dormant_df["POID"] = final_poid
+                    dormant_df["PO ID"] = final_poid
     
                     # Ensure necessary columns exist
                     for col in ["SID", "Variable Name", "Action"]:
