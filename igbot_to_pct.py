@@ -233,10 +233,6 @@ if file2:
 
     # Add the new column "Action" with the value "INSERT" for all rows
     df_price_mapping["Action"] = "INSERT"
-
-    # Ensure "SID" exists in Rules-Price-Mapping
-    if "SID" not in df_price_mapping.columns:
-        df_price_mapping["SID"] = ""
     
     if file3:
         try:
