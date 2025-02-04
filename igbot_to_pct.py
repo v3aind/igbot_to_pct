@@ -406,9 +406,9 @@ if file2:
     # Sheet 17: Library-Addon-DA
     df_library_addon_da = pd.read_excel(file3, engine="openpyxl", sheet_name="Library-Addon-DA")
     df_library_addon_da["DA ID"] = df_library_addon_da["DA ID"].astype(str)
-    # Ensure "Initial Value" is stored as an integer without scientific notation
+    # Ensure "Initial Value" is stored as a numeric value without scientific notation
     if "Initial Value" in df_library_addon_da.columns:
-        df_library_addon_da["Initial Value"] = df_library_addon_da["Initial Value"].apply(lambda x: int(x) if isinstance(x, (int, float)) else x)
+        df_library_addon_da["Initial Value"] = pd.to_numeric(df_library_addon_da["Initial Value"], errors="coerce").astype("Int64")
     
     df_library_addon_da["Action"] = "INSERT"
     
