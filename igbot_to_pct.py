@@ -230,7 +230,9 @@ if file2:
     else:
         # If "SID" column is missing, create it with default empty strings
         df_price_mapping["SID"] = ""
-    
+    # Debugging statement (corrected)
+    st.write("After ensuring 'SID' in df_price_mapping, columns:", df_price_mapping.columns)    
+
     # Add the new column "Action" with the value "INSERT" for all rows
     df_price_mapping["Action"] = "INSERT"
 
