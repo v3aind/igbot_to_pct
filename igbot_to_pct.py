@@ -3,7 +3,7 @@ import pandas as pd
 import streamlit as st
 from io import BytesIO
 import threading
-import tim
+import time
 import requests
 import numpy as np
 
