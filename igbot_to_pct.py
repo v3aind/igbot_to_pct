@@ -243,12 +243,11 @@ if file2:
     # Add the new column "Action" with the value "INSERT" for all rows
     df_price_mapping["Action"] = "INSERT"
 
-    # Process file3 (Prodef DMP) - Read "Rules-Price" sheet
     if file3:
         try:
             prodef_df = pd.read_excel(file3, sheet_name="Rules-Price", engine="openpyxl")
     
-            # Debugging: Show available columns
+            # Debugging: Show available columns in 'Rules-Price'
             st.write("Columns in 'Rules-Price':", prodef_df.columns)
     
             # Ensure "Variable Name" column exists
@@ -264,31 +263,34 @@ if file2:
                 if dormant_df.empty:
                     st.warning("No 'dormant' rows found in 'Rules-Price'.")
                 else:
+                    # Debugging: Show dormant_df columns before modification
+                    st.write("Dormant DataFrame columns BEFORE modification:", dormant_df.columns)
+    
                     # Add POID from file1
                     dormant_df["PO ID"] = final_poid
     
                     # Ensure necessary columns exist
-                    for col in ["SID", "Variable Name", "Resultant Shortname","Action"]:
+                    required_cols = ["SID", "Variable Name", "Resultant Shortname", "Action"]
+                    for col in required_cols:
                         if col not in dormant_df.columns:
                             dormant_df[col] = ""
     
                     # Set Action column to INSERT
                     dormant_df["Action"] = "INSERT"
     
-                    # Debugging: Show filtered dormant_df before merging
-                    st.write("Filtered 'Variable Name' rows from 'Rules-Price':", dormant_df)
+                    # Debugging: Show dormant_df before merging
+                    st.write("Dormant DataFrame before merging:", dormant_df)
     
                     # Append to existing Rules-Price-Mapping
                     df_price_mapping = pd.concat([df_price_mapping, dormant_df], ignore_index=True)
     
+                    # Debugging: Check if 'Resultant Shortname' is present after merge
+                    st.write("Final 'Rules-Price-Mapping' columns:", df_price_mapping.columns)
                     st.success("Dormant rows successfully added to 'Rules-Price-Mapping'.")
             else:
-                st.error("'Rules-Price' sheet in Prodef DMP is missing the 'Variant' column.")
+                st.error("'Rules-Price' sheet in Prodef DMP is missing the 'Variable Name' column.")
         except Exception as e:
             st.error(f"Error processing 'Rules-Price' sheet in Prodef DMP file: {e}")
-
-    # Save the modified Rules-Price-Mapping data to the Excel sheet
-    df_price_mapping.to_excel(writer, sheet_name="Rules-Price-Mapping", index=False)
 
     # Sheet 10: Rules-Renewal
     df = pd.read_excel(file1, sheet_name="Rules-Renewal")
