@@ -410,6 +410,12 @@ if file2:
     
     # Ensure "Initial Value" is stored as a numeric value without scientific notation
     if "Initial Value" in df_library_addon_da.columns:
+        # Apply formatting function
+        df_library_addon_da["Initial Value"] = df_library_addon_da["Initial Value"].apply(
+            lambda x: "{:.0f}".format(float(str(x).replace(",", ""))) if pd.notna(x) else x
+        )
+    
+        # Convert to numeric after formatting to handle potential NaNs
         df_library_addon_da["Initial Value"] = pd.to_numeric(df_library_addon_da["Initial Value"], errors="coerce").astype("Int64")
     
     df_library_addon_da["Action"] = "INSERT"
