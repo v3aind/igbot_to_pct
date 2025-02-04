@@ -411,7 +411,8 @@ if file2:
         df_library_addon_da["Initial Value"] = df_library_addon_da["Initial Value"].apply(lambda x: int(x) if isinstance(x, (int, float)) else x)
     
     df_library_addon_da["Action"] = "INSERT"
-    df_library_addon_da.to_excel(writer, sheet_name="Library-Addon-DA", index=False)
+    # Save to Excel with explicit float format
+    df_library_addon_da.to_excel(writer, sheet_name="Library-Addon-DA", index=False, float_format="%.0f")
 
     # Sheet 18: Library-Addon-UCUT
     library_addon_ucut_df = pd.DataFrame(
