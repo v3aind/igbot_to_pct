@@ -241,46 +241,42 @@ if file2:
     if file3:
         try:
             prodef_df = pd.read_excel(file3, sheet_name="Rules-Price", engine="openpyxl")
-        
-            # Debug column names
-            st.write("Columns in 'Rules-Price':", prodef_df.columns)
+            st.write("After reading 'Rules-Price', columns:", prodef_df.columns)  # Debugging
     
             if "Variable Name" in prodef_df.columns:
                 prodef_df["Variable Name"] = prodef_df["Variable Name"].astype(str).str.strip().str.lower()
-            
-                # Filter for "dormant" rows
-                dormant_df = prodef_df[prodef_df["Variable Name"] == "dormant"].copy()
     
-                if dormant_df.empty:
-                    st.warning("No 'dormant' rows found in 'Rules-Price'.")
-                else:
-                    # Add POID
+                dormant_df = prodef_df[prodef_df["Variable Name"] == "dormant"].copy()
+                st.write("Filtered dormant_df columns:", dormant_df.columns)  # Debugging
+    
+                if not dormant_df.empty:
                     dormant_df["PO ID"] = final_poid
     
-                    # Ensure necessary columns exist
-                    required_cols = ["SID", "Variable Name", "Resultant Shortname", "Action"]
-                    for col in required_cols:
-                        if col not in dormant_df.columns:
-                            dormant_df[col] = ""
+                    # Ensure SID exists in dormant_df before merging
+                    if "SID" not in dormant_df.columns:
+                        dormant_df["SID"] = ""
     
                     # Set Action column to INSERT
                     dormant_df["Action"] = "INSERT"
     
-                    # Ensure SID exists in both dataframes before merging
-                    if "SID" not in df_price_mapping.columns:
-                        df_price_mapping["SID"] = ""
+                    st.write("After adding 'SID', dormant_df columns:", dormant_df.columns)  # Debugging
     
-                    if "SID" not in dormant_df.columns:
-                        dormant_df["SID"] = ""
+                    # Append to Rules-Price-Mapping
+                    df_price_mapping = pd.concat(
+                        [df_price_mapping, dormant_df[["SID", "Variable Name", "Resultant Shortname", "Action"]]],
+                        ignore_index=True, sort=False
+                    )
     
-                    # Append to existing Rules-Price-Mapping
-                    df_price_mapping = pd.concat([df_price_mapping, dormant_df], ignore_index=True)
+                    st.write("After merging, df_price_mapping columns:", df_price_mapping.columns)  # Debugging
     
             else:
                 st.error("'Rules-Price' sheet in Prodef DMP is missing the 'Variable Name' column.")
-    
         except Exception as e:
             st.error(f"Error processing 'Rules-Price' sheet in Prodef DMP file: {e}")
+    
+    # Save modified data
+    df_price_mapping.to_excel(writer, sheet_name="Rules-Price-Mapping", index=False)
+    st.write("Final saved file columns:", df_price_mapping.columns)  # Debugging
     
     # Save the modified Rules-Price-Mapping data to the Excel sheet
     df_price_mapping.to_excel(writer, sheet_name="Rules-Price-Mapping", index=False)
