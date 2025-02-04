@@ -6,6 +6,7 @@ import threading
 import time
 import requests
 import numpy as np
+from openpyxl import Workbook
 
 # Initialize default output and file name
 output = BytesIO()
@@ -406,13 +407,28 @@ if file2:
     # Sheet 17: Library-Addon-DA
     df_library_addon_da = pd.read_excel(file3, engine="openpyxl", sheet_name="Library-Addon-DA")
     df_library_addon_da["DA ID"] = df_library_addon_da["DA ID"].astype(str)
+    
     # Ensure "Initial Value" is stored as a numeric value without scientific notation
     if "Initial Value" in df_library_addon_da.columns:
         df_library_addon_da["Initial Value"] = pd.to_numeric(df_library_addon_da["Initial Value"], errors="coerce").astype("Int64")
     
     df_library_addon_da["Action"] = "INSERT"
-
-    df_library_addon_da.to_excel(writer, sheet_name="Library-Addon-DA", index=False)
+    
+    # Save to Excel with explicit column formatting
+    with pd.ExcelWriter(file3, engine="openpyxl") as writer:
+        df_library_addon_da.to_excel(writer, sheet_name="Library-Addon-DA", index=False)
+        
+        # Access the workbook and worksheet
+        workbook = writer.book
+        worksheet = writer.sheets["Library-Addon-DA"]
+        
+        # Find the column index of "Initial Value"
+        if "Initial Value" in df_library_addon_da.columns:
+            col_idx = df_library_addon_da.columns.get_loc("Initial Value") + 1  # Excel index starts from 1
+            
+            # Apply number format to prevent scientific notation
+            for row in range(2, len(df_library_addon_da) + 2):  # Skip header row
+                worksheet.cell(row=row, column=col_idx).number_format = "0"
 
     # Sheet 18: Library-Addon-UCUT
     library_addon_ucut_df = pd.DataFrame(
