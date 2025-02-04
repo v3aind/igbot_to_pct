@@ -259,7 +259,7 @@ if file2:
                 st.write("Unique values in 'Variable Name' column:", prodef_df["Variable Name"].unique())
     
                 # Filter for "dormant" rows
-                dormant_df = prodef_df[prodef_df["Variable Name"] == "DORMANT"].copy()
+                dormant_df = prodef_df[prodef_df["Variable Name"] == "dormant"].copy()
     
                 if dormant_df.empty:
                     st.warning("No 'dormant' rows found in 'Rules-Price'.")
