@@ -411,11 +411,8 @@ if file2:
         df_library_addon_da["Initial Value"] = pd.to_numeric(df_library_addon_da["Initial Value"], errors="coerce").astype("Int64")
     
     df_library_addon_da["Action"] = "INSERT"
-    
-    # Save to Excel ensuring integer format
-    with pd.ExcelWriter(file3, engine="openpyxl") as writer:
-        df_library_addon_da.to_excel(writer, sheet_name="Library-Addon-DA", index=False)
 
+    df_library_addon_da.to_excel(writer, sheet_name="Library-Addon-DA", index=False)
 
     # Sheet 18: Library-Addon-UCUT
     library_addon_ucut_df = pd.DataFrame(
