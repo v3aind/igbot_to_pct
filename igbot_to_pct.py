@@ -230,8 +230,6 @@ if file2:
     else:
         # If "SID" column is missing, create it with default empty strings
         df_price_mapping["SID"] = ""
-    # Debugging statement (corrected)
-    st.write("After ensuring 'SID' in df_price_mapping, columns:", df_price_mapping.columns)    
 
     # Add the new column "Action" with the value "INSERT" for all rows
     df_price_mapping["Action"] = "INSERT"
@@ -243,34 +241,23 @@ if file2:
     if file3:
         try:
             prodef_df = pd.read_excel(file3, sheet_name="Rules-Price", engine="openpyxl")
-            st.write("After reading 'Rules-Price', columns:", prodef_df.columns)  # Debugging
     
             if "Variable Name" in prodef_df.columns:
                 prodef_df["Variable Name"] = prodef_df["Variable Name"].astype(str).str.strip().str.lower()
     
                 dormant_df = prodef_df[prodef_df["Variable Name"] == "dormant"].copy()
-                st.write("Filtered dormant_df columns:", dormant_df.columns)  # Debugging
     
                 if not dormant_df.empty:
                     dormant_df["PO ID"] = final_poid
-    
-                    # Ensure SID exists in dormant_df before merging
-                    if "SID" not in dormant_df.columns:
-                        dormant_df["SID"] = ""
-    
+       
                     # Set Action column to INSERT
                     dormant_df["Action"] = "INSERT"
-    
-                    st.write("After adding 'SID', dormant_df columns:", dormant_df.columns)  # Debugging
-    
+       
                     # Append to Rules-Price-Mapping
                     df_price_mapping = pd.concat(
                         [df_price_mapping, dormant_df[["SID", "Variable Name", "Resultant Shortname", "Action"]]],
                         ignore_index=True, sort=False
-                    )
-    
-                    st.write("After merging, df_price_mapping columns:", df_price_mapping.columns)  # Debugging
-    
+                    )   
             else:
                 st.error("'Rules-Price' sheet in Prodef DMP is missing the 'Variable Name' column.")
         except Exception as e:
