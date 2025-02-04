@@ -246,26 +246,17 @@ if file2:
     if file3:
         try:
             prodef_df = pd.read_excel(file3, sheet_name="Rules-Price", engine="openpyxl")
-    
-            # Debugging: Show available columns in 'Rules-Price'
-            st.write("Columns in 'Rules-Price':", prodef_df.columns)
-    
+        
             # Ensure "Variable Name" column exists
             if "Variable Name" in prodef_df.columns:
                 prodef_df["Variable Name"] = prodef_df["Variable Name"].astype(str).str.strip().str.lower()  # Normalize text
-    
-                # Debugging: Show unique values in "Variable Name"
-                st.write("Unique values in 'Variable Name' column:", prodef_df["Variable Name"].unique())
-    
+       
                 # Filter for "dormant" rows
                 dormant_df = prodef_df[prodef_df["Variable Name"] == "dormant"].copy()
     
                 if dormant_df.empty:
                     st.warning("No 'dormant' rows found in 'Rules-Price'.")
-                else:
-                    # Debugging: Show dormant_df columns before modification
-                    st.write("Dormant DataFrame columns BEFORE modification:", dormant_df.columns)
-    
+                else:    
                     # Add POID from file1
                     dormant_df["PO ID"] = final_poid
     
@@ -277,10 +268,7 @@ if file2:
     
                     # Set Action column to INSERT
                     dormant_df["Action"] = "INSERT"
-    
-                    # Debugging: Show dormant_df before merging
-                    st.write("Dormant DataFrame before merging:", dormant_df)
-    
+        
                     # Append to existing Rules-Price-Mapping
                     df_price_mapping = pd.concat([df_price_mapping, dormant_df], ignore_index=True)
     
