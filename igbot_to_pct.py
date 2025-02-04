@@ -525,17 +525,17 @@ if file2:
     )
     dormant_config_df.to_excel(writer, sheet_name="Dormant-Config", index=False)
 
-        # Access the workbook and worksheet
-        workbook = writer.book
-        worksheet = writer.sheets["Library-Addon-DA"]
+    # Access the workbook and worksheet
+    workbook = writer.book
+    worksheet = writer.sheets["Library-Addon-DA"]
+    
+    # Find the column index of "Initial Value"
+    if "Initial Value" in df_library_addon_da.columns:
+        col_idx = df_library_addon_da.columns.get_loc("Initial Value") + 1  # Excel index starts from 1
         
-        # Find the column index of "Initial Value"
-        if "Initial Value" in df_library_addon_da.columns:
-            col_idx = df_library_addon_da.columns.get_loc("Initial Value") + 1  # Excel index starts from 1
-            
-            # Apply number format to prevent scientific notation
-            for row in range(2, len(df_library_addon_da) + 2):  # Skip header row
-                worksheet.cell(row=row, column=col_idx).number_format = "0"
+        # Apply number format to prevent scientific notation
+        for row in range(2, len(df_library_addon_da) + 2):  # Skip header row
+            worksheet.cell(row=row, column=col_idx).number_format = "0"
 
     writer.close()  # Ensure writer is closed
 
