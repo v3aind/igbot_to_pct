@@ -419,8 +419,21 @@ if file2:
         df_library_addon_da["Initial Value"] = pd.to_numeric(df_library_addon_da["Initial Value"], errors="coerce").astype("Int64")
     
     df_library_addon_da["Action"] = "INSERT"
-    df_library_addon_da.to_excel(writer, sheet_name="Library-Addon-DA", index=False)
-
+    
+    # Write to Excel with number formatting
+    with pd.ExcelWriter(writer, engine='xlsxwriter') as writer:
+        df_library_addon_da.to_excel(writer, sheet_name="Library-Addon-DA", index=False)
+        
+        # Access the XlsxWriter workbook and worksheet objects
+        workbook  = writer.book
+        worksheet = writer.sheets['Library-Addon-DA']
+        
+        # Define a number format for the "Initial Value" column
+        number_format = workbook.add_format({'num_format': '0'})
+        
+        # Apply the number format to the "Initial Value" column
+        worksheet.set_column('L:L', None, number_format)  # Assuming "Initial Value" is in column C
+        
     # Sheet 18: Library-Addon-UCUT
     library_addon_ucut_df = pd.DataFrame(
         {
