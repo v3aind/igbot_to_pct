@@ -251,7 +251,7 @@ if file2:
        
                     # Append to Rules-Price-Mapping
                     df_price_mapping = pd.concat(
-                        [df_price_mapping, dormant_df[["SID", "Variable Name", "Resultant Shortname", "Action"]]],
+                        [df_price_mapping, dormant_df[["Variable Name", "Resultant Shortname", "Action"]]],
                         ignore_index=True, sort=False
                     )   
             else:
