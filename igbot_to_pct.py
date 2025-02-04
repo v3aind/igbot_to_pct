@@ -406,13 +406,16 @@ if file2:
     # Sheet 17: Library-Addon-DA
     df_library_addon_da = pd.read_excel(file3, engine="openpyxl", sheet_name="Library-Addon-DA")
     df_library_addon_da["DA ID"] = df_library_addon_da["DA ID"].astype(str)
-    # Ensure "Initial Value" is in non-scientific integer format
+    # Ensure "Initial Value" is stored as an integer without scientific notation
     if "Initial Value" in df_library_addon_da.columns:
         df_library_addon_da["Initial Value"] = df_library_addon_da["Initial Value"].apply(lambda x: int(x) if isinstance(x, (int, float)) else x)
     
     df_library_addon_da["Action"] = "INSERT"
-    # Save to Excel with explicit float format
-    df_library_addon_da.to_excel(writer, sheet_name="Library-Addon-DA", index=False, float_format="%.0f")
+    
+    # Save to Excel ensuring integer format
+    with pd.ExcelWriter(file3, engine="openpyxl") as writer:
+        df_library_addon_da.to_excel(writer, sheet_name="Library-Addon-DA", index=False)
+
 
     # Sheet 18: Library-Addon-UCUT
     library_addon_ucut_df = pd.DataFrame(
