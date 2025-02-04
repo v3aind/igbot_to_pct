@@ -358,15 +358,9 @@ if file2:
 
     # Sheet 14: Rebuy-Association
     rebuy_association_df= pd.read_excel(file3, engine="openpyxl", sheet_name="Rebuy-Association")
-    
-    rebuy_association_df["Service Type"] = (
-    rebuy_association_df["Service Type"]
-    .astype(str).str.strip()
-    .replace(["nan", "NaN"], "")  # Handle string "nan"
-    .replace(r"^\s*$", "", regex=True)  # Remove empty strings with spaces
-    .str.upper()
-    )
-    
+
+    rebuy_association_df["Service Type"] = "NA"
+   
     rebuy_association_df["Allow Rebuy"] = rebuy_association_df["Allow Rebuy"].astype(str).str.strip().str.upper()
     rebuy_association_df["Rebuy Option"] = rebuy_association_df["Rebuy Option"].astype(str).str.strip()
     rebuy_association_df["Source Ruleset ShortName"] = rebuy_association_df["Source Ruleset ShortName"].astype(str).str.strip().str.upper()
