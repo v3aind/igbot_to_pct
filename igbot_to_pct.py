@@ -272,9 +272,6 @@ if file2:
                     # Append to existing Rules-Price-Mapping
                     df_price_mapping = pd.concat([df_price_mapping, dormant_df], ignore_index=True)
     
-                    # Debugging: Check if 'Resultant Shortname' is present after merge
-                    st.write("Final 'Rules-Price-Mapping' columns:", df_price_mapping.columns)
-                    st.success("Dormant rows successfully added to 'Rules-Price-Mapping'.")
             else:
                 st.error("'Rules-Price' sheet in Prodef DMP is missing the 'Variable Name' column.")
         except Exception as e:
