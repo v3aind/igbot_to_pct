@@ -503,7 +503,7 @@ if file2:
     keyword_global_variable_df.to_excel(writer, sheet_name="Keyword-Global-Variable", index=False)
 
     # Sheet 25: UMB-Push-Category
-    umb_push_category_df= pd.read_excel(file3, engine="openpyxl", sheet_name="UMB Push Category")
+    umb_push_category_df= pd.read_excel(file3, engine="openpyxl", sheet_name="UMB-Push-Category")
     umb_push_category_df["Action"]= "INSERT"
     
     umb_push_category_df.to_excel(writer, sheet_name="UMB-Push-Category", index=False)
