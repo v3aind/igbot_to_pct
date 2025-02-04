@@ -432,7 +432,7 @@ if file2:
         number_format = workbook.add_format({'num_format': '0'})
         
         # Apply the number format to the "Initial Value" column
-        worksheet.set_column('L:L', None, number_format)  # Assuming "Initial Value" is in column C
+        worksheet.set_column('L:L', None, number_format)  # Assuming "Initial Value" is in column L
         
     # Sheet 18: Library-Addon-UCUT
     library_addon_ucut_df = pd.DataFrame(
