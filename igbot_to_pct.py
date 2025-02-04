@@ -212,10 +212,6 @@ if file2:
 
     # Sheet 9: Rules-Price-Mapping
     df_price_mapping = pd.read_excel(file1, sheet_name="Rules-Price-Mapping", engine="openpyxl")
-    
-    # Debug: Check initial columns
-    st.write("Before processing, df_price_mapping columns:", df_price_mapping.columns)
-    st.write("First few rows of df_price_mapping:", df_price_mapping.head())
 
     # Convert "Variable Name" column to lowercase
     if "Variable Name" in df_price_mapping.columns:
@@ -234,9 +230,6 @@ if file2:
     else:
         # If "SID" column is missing, create it with default empty strings
         df_price_mapping["SID"] = ""
-    
-    # Debug: Confirm SID after processing
-    st.write("After processing SID, df_price_mapping columns:", df_price_mapping.columns)
 
     # Add the new column "Action" with the value "INSERT" for all rows
     df_price_mapping["Action"] = "INSERT"
@@ -244,9 +237,6 @@ if file2:
     if file3:
         try:
             prodef_df = pd.read_excel(file3, sheet_name="Rules-Price", engine="openpyxl")
-            
-            # Debug: Check columns after reading file3
-            st.write("After reading 'Rules-Price', columns:", prodef_df.columns)
         
             # Ensure "Variable Name" column exists
             if "Variable Name" in prodef_df.columns:
@@ -267,9 +257,6 @@ if file2:
                         if col not in dormant_df.columns:
                             dormant_df[col] = ""
     
-                    # Debug: Confirm SID before merging
-                    st.write("Before merging, dormant_df columns:", dormant_df.columns)
-    
                     # Set Action column to INSERT
                     dormant_df["Action"] = "INSERT"
         
@@ -279,9 +266,6 @@ if file2:
                         ignore_index=True, sort=False
                     )
     
-                    # Debug: Confirm SID after merging
-                    st.write("After merging, df_price_mapping columns:", df_price_mapping.columns)
-    
             else:
                 st.error("'Rules-Price' sheet in Prodef DMP is missing the 'Variable Name' column.")
         except Exception as e:
@@ -289,9 +273,6 @@ if file2:
     
     # Save the modified Rules-Price-Mapping data to the Excel sheet
     df_price_mapping.to_excel(writer, sheet_name="Rules-Price-Mapping", index=False)
-    
-    # Debug: Confirm SID before saving
-    st.write("Final saved columns:", df_price_mapping.columns)
 
     # Sheet 10: Rules-Renewal
     df = pd.read_excel(file1, sheet_name="Rules-Renewal")
