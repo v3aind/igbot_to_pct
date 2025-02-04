@@ -268,7 +268,7 @@ if file2:
                     dormant_df["PO ID"] = final_poid
     
                     # Ensure necessary columns exist
-                    for col in ["SID", "Variable Name", "Action"]:
+                    for col in ["SID", "Variable Name", "Resultant Shortname","Action"]:
                         if col not in dormant_df.columns:
                             dormant_df[col] = ""
     
