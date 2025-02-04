@@ -303,6 +303,10 @@ if file2:
     # Replace any NaN with empty strings explicitly to avoid issues
     df["Reg Subaction"] = df["Reg Subaction"].fillna("")
 
+    rule_message_df["Flag Charge"] = rule_message_df["Flag Charge"].astype(str).str.strip()
+    rule_message_df["Flag Suspend"] = rule_message_df["Flag Suspend"].astype(str).str.strip()
+    rule_message_df["Flag Option"] = rule_message_df["Flag Option"].astype(str).str.strip()
+
     # Add the new column "Action" with the value "INSERT" for all rows
     df["Action"] = "INSERT"
 
